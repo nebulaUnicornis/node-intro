@@ -46,7 +46,7 @@ function getAddressPosition(address) {
       // Return object with lat and lng
       var coordinates = { 
         "lat":  result.results[0].geometry.location.lat, 
-        "lng":  result.results[0].geometry.location.lat
+        "lng":  result.results[0].geometry.location.lng
       };
       return coordinates;
     },
@@ -74,7 +74,6 @@ function getCurrentTemperatureAtPosition(position) {
     function(data) {
       // Parse as JSON
       var result = JSON.parse(data);
-      //console.log(result.currently.temperature);
       var currentTemperature = result.currently.temperature;
       return currentTemperature;
     },
@@ -96,10 +95,51 @@ getCurrentTemperatureAtPosition('7.1193,73.1227')
 
 /**********************************************************************/
 
-// function getCurrentTemperature(address) {
+function getCurrentTemperature(address) {
+  getAddressPosition(address)
+  .then(function(data) {
+    // Convert data to string in order to pass it as argument
+    data = data.lat.toString() + ',' + data.lng.toString();
+      
+    getCurrentTemperatureAtPosition(data)
+    .then(function(value) {
+        console.log('Temperature: ' + value);
+        return value;
+    });
+      
+      
+  });
+  
+  // var position = getAddressPosition(address)
+  // .then(function(data) {
+  //   return data;
+  // });
+  // console.log(position);
+  // return position;
+}
 
-// }
+getCurrentTemperature('8871 Rue Meunier, Montreal, QC');
 
-// function getDistanceFromIss(address) {
+/**********************************************************************/
 
-// }
+function getDistanceFromIss(address) {
+  
+  getAddressPosition(address)
+  .then(function(pos1) {
+    // Convert data to string in order to pass it as argument
+    //console.log('Position1: ', pos1);
+      
+    getIssPosition().then(function(pos2) {
+    //console.log('Position2: ', pos2);
+    
+    var distance = getDistance(pos1, pos2);
+    console.log('Final distance: ', distance);
+    
+    });
+      
+      
+  });
+
+}
+
+getDistanceFromIss('8871 Rue Meunier, Montreal, QC');
